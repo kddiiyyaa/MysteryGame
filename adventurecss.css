@@ -1,0 +1,1110 @@
+/* ============================================================
+   MYSTERY INVESTIGATION — adventurecss.css
+   One file covers ALL pages:
+   adventure · description · room0 · bathroom · canteen ·
+   recroom · vendingmachine · coffeemachine · piano · shelf ·
+   sink · window · toilet · table · christmastree
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* ── Walls & Wood ── */
+  --wall:            #1e1108;
+  --wall-mid:        #2e1a0c;
+  --wood:            #6b3f1a;
+  --wood-dark:       #3d2008;
+  --wood-light:      #8a5a28;
+
+  /* ── Burgundy ── */
+  --burgundy:        #7a1a2e;
+  --burgundy-dark:   #4a0e1a;
+  --burgundy-light:  #a02840;
+
+  /* ── Gold ── */
+  --gold:            #c89614;
+  --gold-dark:       #7a5c00;
+  --gold-light:      #e0b030;
+
+  /* ── Paper / Ink ── */
+  --paper:           #ede0b0;
+  --paper-mid:       #d8c888;
+  --paper-dark:      #b8a860;
+  --ink:             #14100a;
+
+  /* ── Aged neutrals ── */
+  --aged:            #8a6e48;
+  --aged-light:      #b09060;
+
+  /* ── Glow accents ── */
+  --glow-gold:       rgba(200, 150, 20, 0.22);
+  --glow-burg:       rgba(122, 26, 46, 0.24);
+  --shadow:          rgba(0, 0, 0, 0.82);
+}
+
+/* ============================================================
+   2. RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+img  { display: block; max-width: 100%; }
+a    { text-decoration: none; }
+
+/* ============================================================
+   3. BODY — SHARED WALL BACKGROUND
+   Warm brown plaster + vertical wood planks + diagonal straps
+   + noise grain + vignette on every page
+   ============================================================ */
+body {
+  font-family: 'Courier Prime', monospace;
+  color: var(--paper);
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+
+  background-color: var(--wall);
+  background-image:
+    /* ── STRAP A: bold diagonal tape lines (135°) ── */
+    repeating-linear-gradient(
+      135deg,
+      transparent             0px,
+      transparent             195px,
+      rgba(90, 48, 10, 0.28)  195px,
+      rgba(90, 48, 10, 0.28)  212px
+    ),
+    /* ── STRAP B: offset second set ── */
+    repeating-linear-gradient(
+      135deg,
+      transparent             0px,
+      transparent             420px,
+      rgba(55, 28, 6, 0.18)   420px,
+      rgba(55, 28, 6, 0.18)   434px
+    ),
+    /* ── STRAP C: cross-diagonal (45°) ── */
+    repeating-linear-gradient(
+      45deg,
+      transparent             0px,
+      transparent             310px,
+      rgba(70, 36, 8, 0.14)   310px,
+      rgba(70, 36, 8, 0.14)   322px
+    ),
+    /* ── PLANK LINES: vertical wood seams ── */
+    repeating-linear-gradient(
+      90deg,
+      transparent      0px,
+      transparent      112px,
+      rgba(0,0,0,0.18) 113px,
+      transparent      114px
+    ),
+    /* ── GRAIN: subtle horizontal wood texture ── */
+    repeating-linear-gradient(
+      180deg,
+      transparent              0px,
+      transparent              4px,
+      rgba(255,255,255,0.016)  5px,
+      transparent              6px
+    ),
+    /* ── WARM AMBER glow from centre ── */
+    radial-gradient(ellipse at 50% 40%, rgba(130, 78, 14, 0.18) 0%, transparent 60%),
+    /* ── VIGNETTE: dark edges ── */
+    radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.86) 100%),
+    /* ── NOISE GRAIN svg ── */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.11'/%3E%3C/svg%3E");
+}
+
+/* ── Decorative corner bracket straps (all pages) ── */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  width: 90px;
+  height: 90px;
+  border-style: solid;
+  border-color: rgba(200, 150, 20, 0.45);
+  pointer-events: none;
+  z-index: 9999;
+  animation: bracketPulse 5s ease-in-out infinite;
+}
+body::before { top: 18px;    left: 18px;    border-width: 2px 0 0 2px; }
+body::after  { bottom: 18px; right: 18px;   border-width: 0 2px 2px 0; }
+
+/* ============================================================
+   4. KEYFRAMES
+   ============================================================ */
+@keyframes bracketPulse {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 1.00; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes goldFlicker {
+  0%,100% { text-shadow: 0 0 32px rgba(200,150,20,0.60), 0 0 80px rgba(200,150,20,0.20), 2px 2px 0 rgba(0,0,0,0.75); }
+  28%     { text-shadow: 0 0 14px rgba(200,150,20,0.30), 0 0 40px rgba(200,150,20,0.10), 2px 2px 0 rgba(0,0,0,0.75); }
+  55%     { text-shadow: 0 0 55px rgba(200,150,20,0.78), 0 0 120px rgba(200,150,20,0.28), 2px 2px 0 rgba(0,0,0,0.75); }
+}
+
+@keyframes bob {
+  0%,100% { transform: translateY(0);    }
+  50%     { transform: translateY(-9px); }
+}
+
+@keyframes sway {
+  0%,100% { transform: rotate(-1.5deg); }
+  50%     { transform: rotate( 1.5deg); }
+}
+
+@keyframes shimmerSweep {
+  from { left: -80%; }
+  to   { left: 130%; }
+}
+
+@keyframes startPulse {
+  0%,100% { box-shadow: 0 7px 0 var(--gold-dark), 0 14px 28px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.38), 0 0 0 0   rgba(200,150,20,0.60); }
+  50%     { box-shadow: 0 7px 0 var(--gold-dark), 0 14px 28px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.38), 0 0 0 14px rgba(200,150,20,0); }
+}
+
+@keyframes flickerLight {
+  0%,100% { opacity: 0.55; }
+  38%     { opacity: 0.16; }
+  52%     { opacity: 0.90; }
+  75%     { opacity: 0.30; }
+}
+
+/* ============================================================
+   5. SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: var(--wall); }
+::-webkit-scrollbar-thumb { background: var(--aged); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--aged-light); }
+
+/* ============================================================
+   ▓▓▓▓▓▓▓▓▓▓▓▓▓  PAGE STYLES  ▓▓▓▓▓▓▓▓▓▓▓▓▓
+   ============================================================ */
+
+/* ============================================================
+   6. LANDING PAGE  →  adventure.html
+   ============================================================ */
+.landing-page {
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Extra two corners via container pseudo */
+.landing-page .container::before,
+.landing-page .container::after {
+  content: '';
+  position: fixed;
+  width: 90px; height: 90px;
+  border-style: solid;
+  border-color: rgba(200,150,20,0.38);
+  pointer-events: none;
+  z-index: 9998;
+  animation: bracketPulse 5s 2.5s ease-in-out infinite;
+}
+.landing-page .container::before { top: 18px;    right: 18px;   border-width: 2px 2px 0 0; }
+.landing-page .container::after  { bottom: 18px; left: 18px;    border-width: 0 0 2px 2px; }
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  animation: fadeUp 1.2s ease both;
+}
+
+/* Floating magnifying glass above title */
+.container::after {
+  content: '🔍';
+  font-size: 3.2rem;
+  order: -1;
+  display: block;
+  position: static;
+  width: auto; height: auto;
+  border: none;
+  animation: bob 3.2s ease-in-out infinite, fadeIn 0.8s 0.3s ease both;
+  filter: drop-shadow(0 0 20px rgba(200,150,20,0.70));
+}
+
+/* "CASE FILE #001" label generated above .game-title */
+.game-title::before {
+  content: '— CASE FILE  #001 —';
+  display: block;
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(0.55rem, 1.2vw, 0.70rem);
+  letter-spacing: 5px;
+  color: var(--aged-light);
+  opacity: 0.62;
+  margin-bottom: 14px;
+  animation: fadeIn 1s 0.5s ease both;
+}
+
+.game-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 10vw, 7rem);
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1;
+  animation: goldFlicker 7s ease-in-out infinite, fadeUp 1s 0.2s ease both;
+}
+
+/* Gold rule under title */
+.game-title::after {
+  content: '';
+  display: block;
+  width: 52%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 14px auto 0;
+  opacity: 0.50;
+  animation: fadeIn 1s 0.9s ease both;
+}
+
+/* Optional subtitle paragraph */
+.game-subtitle {
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  letter-spacing: 3px;
+  color: var(--aged-light);
+  font-style: italic;
+  opacity: 0.70;
+  max-width: 420px;
+  line-height: 1.78;
+  animation: fadeUp 1s 0.7s ease both;
+}
+
+/* ══ START BUTTON ══ */
+.start-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 15px 52px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--gold-light) 0%, var(--gold) 60%, #8a6800 100%);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 7px 0 var(--gold-dark),
+    0 14px 28px rgba(0,0,0,0.65),
+    inset 0 1px 0 rgba(255,255,255,0.40),
+    inset 0 -1px 0 rgba(0,0,0,0.18);
+  transition: transform 0.13s ease, box-shadow 0.13s ease;
+  animation: fadeUp 1s 1s ease both, startPulse 2.5s 2.5s ease-in-out infinite;
+}
+.start-button::before { content: '▶'; font-family: monospace; font-size: 0.85rem; transition: transform 0.22s ease; }
+.start-button::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -80%; width: 55%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.40), transparent);
+  animation: shimmerSweep 3s 3s ease infinite;
+  pointer-events: none;
+}
+.start-button:hover { transform: translateY(-3px); box-shadow: 0 10px 0 var(--gold-dark), 0 20px 40px rgba(0,0,0,0.70), 0 0 0 3px rgba(200,150,20,0.32), inset 0 1px 0 rgba(255,255,255,0.50); }
+.start-button:hover::before { transform: translateX(5px); }
+.start-button:active { transform: translateY(6px); box-shadow: 0 1px 0 var(--gold-dark), inset 0 3px 7px rgba(0,0,0,0.32); }
+
+/* ============================================================
+   7. DESCRIPTION / SCENE PAGE  →  description.html
+   ============================================================ */
+.scene-page { align-items: center; justify-content: center; }
+
+.scene-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  max-width: 1000px;
+  width: 100%;
+  background: rgba(24, 12, 4, 0.78);
+  border: 2px solid rgba(200,150,20,0.30);
+  border-radius: 3px;
+  padding: 36px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.04);
+  animation: fadeUp 0.9s ease both;
+}
+
+.scene-image {
+  width: 100%;
+  /* No fixed height — expands to show full image */
+  overflow: hidden;
+  border: 3px solid var(--wood-dark);
+  border-radius: 2px;
+  box-shadow: 5px 5px 0 rgba(0,0,0,0.55);
+  background: #060402;
+}
+.scene-image img {
+  width: 100%;
+  height: auto;         /* natural height, no crop */
+  object-fit: contain;  /* full image always visible */
+  display: block;
+  filter: sepia(42%) brightness(0.70) contrast(1.12);
+  transition: filter 0.4s;
+}
+.scene-image:hover img { filter: sepia(18%) brightness(0.88) contrast(1.06); }
+
+.scene-content { display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+
+.scene-content h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  animation: goldFlicker 7s ease-in-out infinite;
+}
+
+.scene-content p {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.84rem;
+  line-height: 1.80;
+  color: var(--paper-mid);
+  font-style: italic;
+  opacity: 0.88;
+}
+
+/* ══ INVESTIGATE BUTTON ══ */
+.investigate-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--gold-light), var(--gold));
+  border: 1px solid var(--gold-dark);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  box-shadow: 0 5px 0 var(--gold-dark), inset 0 1px 0 rgba(255,255,255,0.36);
+  transition: transform 0.13s, box-shadow 0.13s;
+  align-self: flex-start;
+}
+.investigate-button::before { content: '▶'; font-family: monospace; font-size: 0.9rem; }
+.investigate-button:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--gold-dark), inset 0 1px 0 rgba(255,255,255,0.46); }
+.investigate-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--gold-dark), inset 0 3px 5px rgba(0,0,0,0.26); }
+
+/* ============================================================
+   8. CHOICE PAGE  →  room0.html
+   ============================================================ */
+.choice-page { align-items: flex-start; padding: 44px 24px; }
+
+.choice-container {
+  width: 100%; max-width: 1100px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 28px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.choice-container h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 7px;
+  color: var(--gold); text-transform: uppercase; text-align: center;
+  animation: goldFlicker 7s ease-in-out infinite;
+}
+
+.choice-description {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.9rem; color: var(--aged-light);
+  letter-spacing: 2px; font-style: italic;
+  text-align: center; opacity: 0.76;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px; width: 100%;
+}
+
+/* ── Option Card ── */
+.option-card {
+  background: rgba(22, 11, 3, 0.85);
+  border: 2px solid var(--wood-dark);
+  border-radius: 3px; overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative;
+  box-shadow: 0 8px 30px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  cursor: pointer;
+}
+.option-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, var(--glow-gold) 0%, transparent 65%);
+  opacity: 0; transition: opacity 0.4s;
+  pointer-events: none; z-index: 1;
+}
+.option-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--gold); box-shadow: 0 20px 55px var(--shadow), 0 0 0 1px var(--gold), 0 0 40px var(--glow-gold); }
+.option-card:hover::before { opacity: 1; }
+.option-card:nth-child(1) { animation: fadeUp 0.6s 0.15s ease both; }
+.option-card:nth-child(2) { animation: fadeUp 0.6s 0.30s ease both; }
+.option-card:nth-child(3) { animation: fadeUp 0.6s 0.45s ease both; }
+
+.option-card .object-image { width: 100%; height: 190px; overflow: hidden; position: relative; }
+.option-card .object-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: sepia(55%) brightness(0.48) contrast(1.14);
+  transition: filter 0.4s, transform 0.4s;
+}
+.option-card:hover .object-image img { filter: sepia(22%) brightness(0.72) contrast(1.06); transform: scale(1.06); }
+
+/* Gradient fade from image into card */
+.option-card .object-image::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 55%;
+  background: linear-gradient(to top, rgba(22,11,3,1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.option-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem; letter-spacing: 4px;
+  color: var(--gold); padding: 14px 18px 6px;
+  text-transform: uppercase;
+}
+.option-card p {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem; color: var(--aged-light);
+  line-height: 1.65; padding: 0 18px 14px;
+  font-style: italic; flex: 1;
+}
+
+/* ══ OPTION BUTTON ══ */
+.option-button {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 0 18px 18px;
+  padding: 10px 20px;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--paper);
+  background: var(--burgundy);
+  border: 1px solid var(--burgundy-dark);
+  border-radius: 2px; cursor: pointer;
+  position: relative; overflow: hidden;
+  box-shadow: 0 5px 0 var(--burgundy-dark), inset 0 1px 0 rgba(255,255,255,0.14);
+  transition: transform 0.13s, box-shadow 0.13s, background 0.13s;
+  align-self: flex-start;
+}
+.option-button::before { content: '→'; font-family: monospace; font-size: 0.9rem; transition: transform 0.2s; }
+.option-button:hover { background: var(--burgundy-light); transform: translateY(-2px); box-shadow: 0 7px 0 var(--burgundy-dark), inset 0 1px 0 rgba(255,255,255,0.20); color: #fff; }
+.option-button:hover::before { transform: translateX(4px); }
+.option-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--burgundy-dark), inset 0 3px 5px rgba(0,0,0,0.32); }
+
+/* ============================================================
+   9. ROOM PAGE  →  bathroom / canteen / recroom .html
+   ============================================================ */
+.room-page { align-items: flex-start; padding: 44px 24px; }
+
+.room-container {
+  width: 100%; max-width: 1100px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 28px;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.room-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 7px; color: var(--gold);
+  text-transform: uppercase; text-align: center;
+  animation: goldFlicker 7s ease-in-out infinite;
+}
+
+.room-description {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.9rem; color: var(--aged-light);
+  letter-spacing: 2px; font-style: italic;
+  text-align: center; max-width: 600px; opacity: 0.78;
+}
+
+.room-objects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px; width: 100%;
+}
+
+/* ── Object Card ── */
+.object-card {
+  background: rgba(20, 10, 3, 0.88);
+  border: 2px solid var(--wood-dark);
+  border-radius: 3px; overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 30px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  cursor: pointer;
+}
+.object-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, var(--glow-gold) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.4s;
+  pointer-events: none; z-index: 1;
+}
+.object-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--gold); box-shadow: 0 20px 55px var(--shadow), 0 0 0 1px var(--gold), 0 0 40px var(--glow-gold); }
+.object-card:hover::before { opacity: 1; }
+.object-card:nth-child(1) { animation: fadeUp 0.6s 0.15s ease both; }
+.object-card:nth-child(2) { animation: fadeUp 0.6s 0.30s ease both; }
+.object-card:nth-child(3) { animation: fadeUp 0.6s 0.45s ease both; }
+
+/* ── Object Image ── */
+.object-image {
+  position: relative; width: 100%; height: 195px;
+  overflow: hidden; background: #060402;
+}
+.object-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: sepia(55%) brightness(0.46) contrast(1.16);
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+.object-card:hover .object-image img { filter: sepia(22%) brightness(0.72) contrast(1.06); transform: scale(1.06); }
+.object-image::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+  background: linear-gradient(to top, rgba(20,10,3,1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ── Silhouette figure ── */
+.person-silhouette {
+  position: absolute; bottom: 8px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2; pointer-events: none;
+}
+.silhouette-figure {
+  width: 26px; height: 60px;
+  background: #000;
+  border-radius: 13px 13px 3px 3px;
+  position: relative;
+  opacity: 0.90; box-shadow: 0 0 20px rgba(0,0,0,0.92);
+  animation: sway 4.5s ease-in-out infinite;
+}
+/* Head */
+.silhouette-figure::before {
+  content: '';
+  position: absolute; top: -17px; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 18px;
+  background: #000; border-radius: 50%;
+}
+/* Arms */
+.silhouette-figure::after {
+  content: '';
+  position: absolute; top: 15px; left: -14px;
+  width: 54px; height: 9px;
+  background: #000; border-radius: 4px;
+}
+.object-card:hover .silhouette-figure { opacity: 0.50; box-shadow: 0 0 28px rgba(200,150,20,0.40); }
+
+/* ── Object Info ── */
+.object-info {
+  padding: 16px 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  position: relative; z-index: 2;
+}
+.object-info h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem; letter-spacing: 4px;
+  color: var(--gold); text-transform: uppercase; line-height: 1;
+}
+.object-info p {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem; color: var(--aged-light);
+  line-height: 1.65; font-style: italic; opacity: 0.85;
+}
+
+/* ══ APPROACH BUTTON ══ */
+.approach-button {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--gold-light), var(--gold));
+  border: 1px solid var(--gold-dark);
+  border-radius: 2px; cursor: pointer;
+  position: relative; overflow: hidden;
+  box-shadow: 0 5px 0 var(--gold-dark), inset 0 1px 0 rgba(255,255,255,0.38);
+  transition: transform 0.13s, box-shadow 0.13s;
+  align-self: flex-start;
+}
+.approach-button::before { content: '→'; font-family: monospace; font-size: 0.9rem; transition: transform 0.2s; }
+.approach-button::after {
+  content: '';
+  position: absolute; top: 0; left: -80%; width: 55%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.38), transparent);
+  transition: left 0.45s; pointer-events: none;
+}
+.approach-button:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--gold-dark), inset 0 1px 0 rgba(255,255,255,0.48); }
+.approach-button:hover::before { transform: translateX(4px); }
+.approach-button:hover::after  { left: 130%; }
+.approach-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--gold-dark), inset 0 3px 5px rgba(0,0,0,0.26); }
+
+/* ══ BACK BUTTON  (room-page & choice-page) ══ */
+.back-button {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 11px 30px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--aged-light);
+  background: transparent;
+  border: 2px solid var(--aged); border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.52);
+  transition: transform 0.13s, box-shadow 0.13s, background 0.18s, color 0.18s, border-color 0.18s;
+  animation: fadeUp 0.6s 0.7s ease both;
+}
+.back-button::before { content: '←'; font-family: monospace; font-size: 1rem; transition: transform 0.2s; }
+.back-button:hover { background: rgba(110,75,30,0.20); border-color: var(--paper-mid); color: var(--paper); transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.52); }
+.back-button:hover::before { transform: translateX(-5px); }
+.back-button:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.52); }
+
+/* ============================================================
+   10. GATHERING PAGE  →  vendingmachine / coffeemachine /
+       piano / shelf / sink / window .html
+   ============================================================ */
+.gathering-page { align-items: flex-start; padding: 44px 24px; }
+
+.gathering-container {
+  width: 100%; max-width: 1100px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 28px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.gathering-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 7px; color: var(--gold);
+  text-transform: uppercase; text-align: center;
+  animation: goldFlicker 7s ease-in-out infinite;
+}
+
+.gathering-description {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.9rem; color: var(--aged-light);
+  letter-spacing: 2px; font-style: italic;
+  text-align: center; max-width: 640px; opacity: 0.78;
+}
+
+.people-around-table {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 26px; width: 100%;
+}
+
+/* ── Person Card ── */
+.person-position {
+  display: flex; flex-direction: column;
+  background: rgba(20, 10, 3, 0.88);
+  border: 2px solid var(--wood-dark);
+  border-radius: 3px; overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 30px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  cursor: pointer;
+}
+.person-position::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, var(--glow-burg) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.4s;
+  pointer-events: none; z-index: 1;
+}
+.person-position:hover { transform: translateY(-8px) scale(1.02); border-color: var(--burgundy-light); box-shadow: 0 20px 55px var(--shadow), 0 0 0 1px var(--burgundy-light), 0 0 40px var(--glow-burg); }
+.person-position:hover::before { opacity: 1; }
+.person-position.left  { animation: fadeUp 0.6s 0.15s ease both; }
+.person-position.right { animation: fadeUp 0.6s 0.30s ease both; }
+.person-position.back  { animation: fadeUp 0.6s 0.45s ease both; }
+
+/* Photo container — works with both .person-image-container and .object-image markup */
+.person-image-container,
+.person-position > .object-image {
+  position: relative; width: 100%; height: 225px;
+  overflow: hidden; background: #060402;
+}
+.person-image-container img,
+.person-position > .object-image img,
+.person-photo {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: sepia(62%) brightness(0.48) contrast(1.16);
+  transition: filter 0.4s, transform 0.4s;
+  display: block;
+}
+.person-position:hover .person-image-container img,
+.person-position:hover > .object-image img,
+.person-position:hover .person-photo { filter: sepia(22%) brightness(0.72) contrast(1.06); transform: scale(1.05); }
+
+.person-image-container::after,
+.person-position > .object-image::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(to top, rgba(20,10,3,1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.person-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, rgba(200,150,20,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Person info */
+.person-info-box {
+  padding: 16px 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  position: relative; z-index: 2;
+}
+.person-info-box h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem; letter-spacing: 4px;
+  color: var(--gold); text-transform: uppercase; line-height: 1;
+}
+.person-info-box p {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem; color: var(--aged-light);
+  line-height: 1.65; font-style: italic; opacity: 0.85;
+}
+
+/* ══ TALK BUTTON ══ */
+.talk-button {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--paper);
+  background: var(--burgundy);
+  border: 1px solid var(--burgundy-dark);
+  border-radius: 2px; cursor: pointer;
+  position: relative; overflow: hidden;
+  box-shadow: 0 5px 0 var(--burgundy-dark), inset 0 1px 0 rgba(255,255,255,0.14);
+  transition: transform 0.13s, box-shadow 0.13s, background 0.13s;
+  align-self: flex-start;
+}
+.talk-button::before { content: '💬'; font-size: 0.82rem; }
+.talk-button:hover { background: var(--burgundy-light); transform: translateY(-2px); box-shadow: 0 7px 0 var(--burgundy-dark), inset 0 1px 0 rgba(255,255,255,0.20); color: #fff; }
+.talk-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--burgundy-dark), inset 0 3px 5px rgba(0,0,0,0.32); }
+
+/* ============================================================
+   11. EMPTY ROOM PAGE  →  toilet / table / christmastree .html
+   ============================================================ */
+.empty-room-page {
+  flex-direction: column; align-items: center;
+  justify-content: center; min-height: 100vh;
+}
+
+.empty-room-container {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 42px;
+  animation: fadeUp 1s ease both;
+}
+
+.empty-room-scene {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 26px;
+}
+
+.empty-room-image {
+  width: 400px; max-width: 90vw; height: 265px;
+  border: 3px solid var(--wood-dark);
+  border-radius: 3px; overflow: hidden;
+  box-shadow: 0 10px 45px rgba(0,0,0,0.85);
+}
+
+.room-darkness {
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 50% 42%, rgba(55,27,7,0.44) 0%, rgba(4,2,0,0.98) 76%);
+  position: relative;
+}
+
+/* Noise texture */
+.room-darkness::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.13'/%3E%3C/svg%3E");
+}
+
+/* Eerie light beam */
+.room-darkness::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 38%; width: 24%; height: 100%;
+  background: linear-gradient(180deg, rgba(180,130,30,0.10) 0%, transparent 84%);
+  transform: skewX(-5deg);
+  animation: flickerLight 4.5s ease-in-out infinite;
+}
+
+.empty-room-message { text-align: center; }
+
+.empty-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  letter-spacing: 8px;
+  color: var(--aged);
+  text-transform: uppercase;
+  opacity: 0.68;
+  text-shadow: 0 0 30px rgba(120,90,40,0.42);
+  animation: goldFlicker 9s ease-in-out infinite;
+}
+
+/* ══ GOBACK BUTTON ══ */
+.goback-button {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 36px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--aged-light);
+  background: transparent;
+  border: 2px solid var(--aged); border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.52);
+  transition: transform 0.13s, box-shadow 0.13s, background 0.18s, color 0.18s, border-color 0.18s;
+}
+.goback-button::before { content: '←'; font-family: monospace; font-size: 1rem; transition: transform 0.2s; }
+.goback-button:hover { background: rgba(110,75,30,0.20); border-color: var(--paper-mid); color: var(--paper); transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.52); }
+.goback-button:hover::before { transform: translateX(-5px); }
+.goback-button:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.52); }
+
+/* ============================================================
+   12. RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .scene-container { grid-template-columns: 1fr; }
+  /* .scene-image height auto — already handled by object-fit: contain */
+
+  .room-objects,
+  .options-grid,
+  .people-around-table {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .object-image,
+  .person-image-container,
+  .person-position > .object-image { height: 175px; }
+}
+
+@media (max-width: 480px) {
+  body { padding: 22px 12px; }
+  body::before, body::after { width: 50px; height: 50px; }
+
+  .approach-button,
+  .option-button,
+  .talk-button,
+  .investigate-button { width: 100%; justify-content: center; }
+
+  .start-button { padding: 13px 32px; letter-spacing: 4px; }
+}
+
+/* ============================================================
+   13. FAILED PAGE  →  failed.html
+   ============================================================ */
+.failed-page {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.failed-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  animation: fadeUp 0.8s ease both;
+}
+
+.failed-stamp {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 14vw, 9rem);
+  letter-spacing: 12px;
+  color: #b01818;
+  border: 5px solid #b01818;
+  border-radius: 5px;
+  padding: 4px 30px 0;
+  display: inline-block;
+  transform: rotate(-7deg);
+  opacity: 0.88;
+  box-shadow:
+    0 0 50px rgba(176, 24, 24, 0.35),
+    inset 0 0 30px rgba(176, 24, 24, 0.08);
+  animation: stampSlam 0.5s 0.4s cubic-bezier(0.22, 0.96, 0.38, 1) both;
+}
+
+@keyframes stampSlam {
+  from { transform: rotate(-7deg) scale(2.8); opacity: 0; }
+  60%  { transform: rotate(-7deg) scale(0.93); opacity: 0.95; }
+  80%  { transform: rotate(-7deg) scale(1.04); }
+  to   { transform: rotate(-7deg) scale(1);    opacity: 0.88; }
+}
+
+.failed-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  letter-spacing: 7px;
+  color: var(--gold);
+  text-transform: uppercase;
+  animation: goldFlicker 7s ease-in-out infinite;
+}
+
+.failed-text {
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: var(--aged-light);
+  letter-spacing: 2px;
+  font-style: italic;
+  opacity: 0.80;
+  max-width: 420px;
+  line-height: 1.75;
+}
+
+/* ══ TRY AGAIN BUTTON ══ */
+.tryagain-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 36px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--aged-light);
+  background: transparent;
+  border: 2px solid var(--aged);
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.52);
+  transition: transform 0.13s, box-shadow 0.13s, background 0.18s, color 0.18s, border-color 0.18s;
+}
+.tryagain-button::before { content: '←'; font-family: monospace; font-size: 1rem; transition: transform 0.2s; }
+.tryagain-button:hover { background: rgba(110,75,30,0.20); border-color: var(--paper-mid); color: var(--paper); transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.52); }
+.tryagain-button:hover::before { transform: translateX(-5px); }
+.tryagain-button:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.52); }
+
+/* ============================================================
+   14. WON PAGE  →  won.html
+   ============================================================ */
+.won-page {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.won-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  animation: fadeUp 0.8s ease both;
+}
+
+.won-stamp {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 14vw, 9rem);
+  letter-spacing: 12px;
+  color: var(--gold);
+  border: 5px solid var(--gold);
+  border-radius: 5px;
+  padding: 4px 30px 0;
+  display: inline-block;
+  transform: rotate(-7deg);
+  opacity: 0.90;
+  box-shadow:
+    0 0 60px rgba(200, 150, 20, 0.50),
+    inset 0 0 30px rgba(200, 150, 20, 0.08);
+  animation: stampSlam 0.5s 0.4s cubic-bezier(0.22, 0.96, 0.38, 1) both;
+}
+
+.won-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  letter-spacing: 7px;
+  color: var(--gold);
+  text-transform: uppercase;
+  animation: goldFlicker 7s ease-in-out infinite;
+}
+
+.won-text {
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: var(--aged-light);
+  letter-spacing: 2px;
+  font-style: italic;
+  opacity: 0.80;
+  max-width: 440px;
+  line-height: 1.75;
+}
+
+/* ══ PLAY AGAIN BUTTON ══ */
+.playagain-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 40px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--gold-light) 0%, var(--gold) 60%, #8a6800 100%);
+  border: 1px solid var(--gold-dark);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 6px 0 var(--gold-dark),
+    0 12px 24px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.38);
+  transition: transform 0.13s ease, box-shadow 0.13s ease;
+}
+.playagain-button::before { content: '↺'; font-family: monospace; font-size: 1.1rem; transition: transform 0.3s ease; }
+.playagain-button::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -80%; width: 55%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.38), transparent);
+  transition: left 0.45s;
+  pointer-events: none;
+}
+.playagain-button:hover { transform: translateY(-3px); box-shadow: 0 9px 0 var(--gold-dark), 0 16px 32px rgba(0,0,0,0.60), 0 0 0 3px rgba(200,150,20,0.30), inset 0 1px 0 rgba(255,255,255,0.48); }
+.playagain-button:hover::before { transform: rotate(-25deg); }
+.playagain-button:hover::after  { left: 130%; }
+.playagain-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--gold-dark), inset 0 3px 6px rgba(0,0,0,0.28); }
